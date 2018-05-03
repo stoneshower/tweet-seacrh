@@ -70,8 +70,8 @@ static/src/stylesheets/pasteup/.npmrc
 .ensime_cache/
 
 # SSL certificates
-*.crt
-*.key
+#*.crt
+#*.key
 .vscode/settings.jso
 
 # credential
