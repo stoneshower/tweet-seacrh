@@ -176,6 +176,5 @@ app.get('/tweet_user', (req, res, next) => {
 const httpServer = http.createServer(app)
 const httpsServer = https.createServer(credentials, app)
 
-httpServer.listen(process.env.PORT || 3000)
-httpsServer.listen(process.env.PORT || 4435)
-console.log(`listen on port 4435`)
+// httpServer.listen(process.env.PORT || 3000)
+httpsServer.listen(process.env.PORT)
