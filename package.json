@@ -52,5 +52,9 @@
     "passport-twitter": "^1.0.4",
     "react-string-replace": "^0.4.1",
     "twitter": "^1.7.1"
+  },
+  "engines": {
+    "node": "v9.4.X",
+    "npm": "5.6.X"
   }
 }
