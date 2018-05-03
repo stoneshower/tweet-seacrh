@@ -1,0 +1,6 @@
+{
+  "globalDependencies": {
+    "a": "file:a.d.ts",
+    "react-string-replace": "file:react-string-replace.d.ts"
+  }
+}

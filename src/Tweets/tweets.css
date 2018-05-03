@@ -1,0 +1,76 @@
+.panel{
+  border: 1px solid #EDEDED;
+  box-sizing: border-box;
+}
+.panelInner{
+  padding: 1em;
+  word-break: break-word;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.panelInner li{
+  font-family: Roboto;
+  color: #A8A8A8;
+  font-size: 12px;
+  font-weight: 400;
+}
+.panelInner > li:first-child{
+  font-size: 14px;
+  line-height: 1.4;
+  color: #898989;
+  border-bottom: 1px solid #EDEDED;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+}
+.panelOfUser .panelInner > li:first-child{
+  border-bottom: none;
+}
+.panelWrapper{
+  display: flex;
+  flex-wrap: wrap;
+}
+.panelWrapper article{
+  flex: 1 1 25%;
+  max-width: 25%;
+  padding: 12px 8px;
+}
+@media(max-width: 480px){
+  .panelWrapper article{
+    flex: 1 1 50%;
+    max-width: 50%;
+    padding: 12px 8px;
+  }
+}
+.profile{
+  display: display;
+}
+.profile ul{
+  list-style: none;
+  padding: 0;
+}
+.profile_main,
+.profile_count,
+.profile_sub{
+  display: flex;
+  flex-wrap: wrap;
+}
+.profile_main li,
+.profile_count li,
+.profile_sub li{
+  flex: 1 1 50%;
+  max-width: 50%;
+}
+.profile_descr{
+  display: block;
+}
+.profile_main{
+  align-items: center;
+}
+.profile_main li:first-child{
+  flex: 0 0 40px;
+}
+.profile_main li:nth-child(2){
+  flex: 1 1 auto;
+  padding-left: 8px;
+}
