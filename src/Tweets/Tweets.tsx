@@ -13,13 +13,14 @@ export default class Tweets extends React.Component<ITweetsProps, {}> {
       super(props);
   }
 
+
   public render(){
     let searchMode: string = this.props.searchMode
     let outputTweet;
     console.log(this.props.tweets)
     if (this.props.searchMode === '') {
       outputTweet = ''
-    } else if (this.props.searchMode === 'keyword') {
+    } else if ( (this.props.searchMode === 'keyword') || (this.props.searchMode === 'hashtag') ) {
       outputTweet = (
         <div className={styles.panelWrapper}>
           {
@@ -66,21 +67,17 @@ export default class Tweets extends React.Component<ITweetsProps, {}> {
                     <ul key={index+'_panelInner'} className={styles.panelInner}>
                       <li key={index+'_profileWrap'} className={styles.profile}>
                         <ul className={styles.profile_main}>
-                          <li key={index+'_profile_image_url'}><img src={tweet.profile_image_url} width="40" height="40"/></li>
-                          <li key={index+'_created_at'}>@{tweet.created_at}</li>
-                          <li key={index+'_name'}>@{tweet.name}</li>
-                          <li key={index+'_screen_name'}>@{tweet.screen_name}</li>
+                          <li key={index+'_profile_image_url'}><img src={tweet.user.profile_image_url} width="40" height="40"/></li>
+                          <li key={index+'_created_at'}>@{tweet.user.created_at}</li>
+                          <li key={index+'_name'}>@{tweet.user.name}</li>
+                          <li key={index+'_screen_name'}>@{tweet.user.screen_name}</li>
                         </ul>
                         <ul className={styles.profile_descr}>
-                          <li key={index+'_description'}>{tweet.description}</li>
-                        </ul>
-                        <ul className={styles.profile_count}>
-                          <li key={index+'_followers_count'}>followers: {tweet.followers_count}</li>
-                          <li key={index+'_friends_count'}>following: {tweet.friends_count}</li>
+                          <li key={index+'_description'}>{tweet.full_text}</li>
                         </ul>
                         <ul className={styles.profile_sub}>
-                          <li key={index+'_id'}>{tweet.id}</li>
-                          <li key={index+'_location'}>{tweet.location}</li>
+                          <li key={index+'_id'}>{tweet.user.id}</li>
+                          <li key={index+'_location'}>{tweet.user.location}</li>
                         </ul>
                       </li>
                     </ul>

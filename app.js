@@ -119,12 +119,17 @@ const client = new Twitter({
 //    {count: 1},
 // 988384362788937700
 
-app.get('/tweets', (req, res, next) => {
+app.get('/tweet_user', (req, res, next) => {
   client.get('statuses/user_timeline',
-   { screen_name: 'NasteL_cs', count: 20 },
+  //  { screen_name: 'NasteL_cs', count: 20 },
+    {
+      screen_name: req.query.q,
+      count: 100,
+      tweet_mode: 'extended',
+      include_rts: false
+    },
    (error, tweets, response) => {
     if (!error) {
-      // res.status(200).render('index', { title: 'Express', tweets: tweets });
       return res.send(tweets);
     }
     else {
@@ -134,7 +139,7 @@ app.get('/tweets', (req, res, next) => {
 })
 
 
-app.get('/tweet_place', (req, res, next) => {
+app.get('/tweet_keyword', (req, res, next) => {
   console.log(req);
   client.get('search/tweets.json',
     {
@@ -154,17 +159,36 @@ app.get('/tweet_place', (req, res, next) => {
 })
 
 
-app.get('/tweet_user', (req, res, next) => {
-  client.get('users/lookup.json',
+// app.get('/tweet_user', (req, res, next) => {
+//   client.get('users/lookup.json',
+//     {
+//       screen_name: req.query.q,
+//       include_entities: true,
+//       tweet_mode: 'extended'
+//     },
+//    (error, response) => {
+//     //  console.log(response)
+//     if (!error) {
+//       return res.send(response);
+//     }
+//     else {
+//       res.status(500).json({ error: error });
+//     }
+//   });
+// })
+
+app.get('/tweet_hashtag', (req, res, next) => {
+  console.log(req);
+  client.get('search/tweets.json',
     {
-      screen_name: req.query.q,
-      include_entities: true,
+      q: req.query.q,
+      count: 100,
       tweet_mode: 'extended'
     },
-   (error, response) => {
-     console.log(response)
+    // lang: 'ja',
+   (error, tweets, response) => {
     if (!error) {
-      return res.send(response);
+      return res.send(tweets);
     }
     else {
       res.status(500).json({ error: error });

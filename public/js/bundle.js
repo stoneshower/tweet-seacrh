@@ -1359,7 +1359,9 @@ var App = /** @class */ (function (_super) {
             searchMode: 'keyword',
             greet: 'Hola',
             keyword: '',
+            user: '',
             hashtag: '',
+            showOptions: false,
             tweets: [
                 {
                     full_text: '',
@@ -1423,7 +1425,7 @@ var App = /** @class */ (function (_super) {
                                 case 'user': return [3 /*break*/, 4];
                             }
                             return [3 /*break*/, 7];
-                        case 1: return [4 /*yield*/, fetch("/tweet_place?q=" + this.state.keyword + " %23" + this.state.hashtag, option)];
+                        case 1: return [4 /*yield*/, fetch("/tweet_keyword?q=" + this.state.keyword + " %23" + this.state.hashtag, option)];
                         case 2:
                             response = _b.sent();
                             return [4 /*yield*/, response.json()];
@@ -1438,10 +1440,12 @@ var App = /** @class */ (function (_super) {
                             return [4 /*yield*/, response.json()];
                         case 6:
                             json = _b.sent();
-                            console.log(json.error[0].code);
-                            (json.error[0].code === 17) ? null : this.setState({ tweetsUser: json });
+                            // (json.error[0].code === 17) ? null : this.setState({tweetsUser:json});
+                            this.setState({ tweetsUser: json });
                             return [3 /*break*/, 7];
-                        case 7: return [2 /*return*/];
+                        case 7:
+                            console.log(json);
+                            return [2 /*return*/];
                     }
                 });
             }); };
@@ -1452,11 +1456,17 @@ var App = /** @class */ (function (_super) {
                 searchMode: e.target.dataset.value
             });
         };
+        _this.switchShowOptions = function () {
+            _this.setState({
+                showOptions: !_this.state.showOptions
+            });
+            return _this.state.showOptions ? 'true' : 'false';
+        };
         return _this;
     }
     App.prototype.render = function () {
         return (React.createElement("div", null,
-            React.createElement(Search_1.default, { onClick: this.handleCallApi, onChange: this.handleChange, onChangeHash: this.handleChaneHash, keyword: this.state.keyword, hashtag: this.state.hashtag, setSearchMode: this.updateSearchMode, searchMode: this.state.searchMode }),
+            React.createElement(Search_1.default, { onClick: this.handleCallApi, onChange: this.handleChange, onChangeHash: this.handleChaneHash, keyword: this.state.keyword, hashtag: this.state.hashtag, setSearchMode: this.updateSearchMode, searchMode: this.state.searchMode, showOptions: this.state.showOptions, onSwitchOptions: this.switchShowOptions }),
             React.createElement(Tweets_1.default, { keyword: this.state.keyword, tweets: this.state.tweets, tweetsUser: this.state.tweetsUser, searchMode: this.state.searchMode })));
     };
     return App;
@@ -20138,7 +20148,7 @@ var Tweets = /** @class */ (function (_super) {
         if (this.props.searchMode === '') {
             outputTweet = '';
         }
-        else if (this.props.searchMode === 'keyword') {
+        else if ((this.props.searchMode === 'keyword') || (this.props.searchMode === 'hashtag')) {
             outputTweet = (React.createElement("div", { className: styles.panelWrapper }, this.props.tweets
                 .sort(function (a, b) { return b.user.followers_count - a.user.followers_count; })
                 .map(function (tweet, index) {
@@ -20174,28 +20184,21 @@ var Tweets = /** @class */ (function (_super) {
                         React.createElement("li", { key: index + '_profileWrap', className: styles.profile },
                             React.createElement("ul", { className: styles.profile_main },
                                 React.createElement("li", { key: index + '_profile_image_url' },
-                                    React.createElement("img", { src: tweet.profile_image_url, width: "40", height: "40" })),
+                                    React.createElement("img", { src: tweet.user.profile_image_url, width: "40", height: "40" })),
                                 React.createElement("li", { key: index + '_created_at' },
                                     "@",
-                                    tweet.created_at),
+                                    tweet.user.created_at),
                                 React.createElement("li", { key: index + '_name' },
                                     "@",
-                                    tweet.name),
+                                    tweet.user.name),
                                 React.createElement("li", { key: index + '_screen_name' },
                                     "@",
-                                    tweet.screen_name)),
+                                    tweet.user.screen_name)),
                             React.createElement("ul", { className: styles.profile_descr },
-                                React.createElement("li", { key: index + '_description' }, tweet.description)),
-                            React.createElement("ul", { className: styles.profile_count },
-                                React.createElement("li", { key: index + '_followers_count' },
-                                    "followers: ",
-                                    tweet.followers_count),
-                                React.createElement("li", { key: index + '_friends_count' },
-                                    "following: ",
-                                    tweet.friends_count)),
+                                React.createElement("li", { key: index + '_description' }, tweet.full_text)),
                             React.createElement("ul", { className: styles.profile_sub },
-                                React.createElement("li", { key: index + '_id' }, tweet.id),
-                                React.createElement("li", { key: index + '_location' }, tweet.location))))));
+                                React.createElement("li", { key: index + '_id' }, tweet.user.id),
+                                React.createElement("li", { key: index + '_location' }, tweet.user.location))))));
             })));
         }
         return (outputTweet);
@@ -20397,33 +20400,33 @@ var Search = /** @class */ (function (_super) {
     __extends(Search, _super);
     function Search(props) {
         var _this = _super.call(this, props) || this;
-        _this.showOptions = function () {
-            _this.setState({
-                showOptions: !_this.state.showOptions
-            });
-        };
+        // private showOptions = () => {
+        //   this.setState({
+        //     showOptions: !this.state.showOptions
+        //   })
+        // }
         _this.switchPlaceholder = function () {
             var placeholder;
             _this.props.searchMode === 'keyword' || _this.props.searchMode === ''
                 ? placeholder = 'keyword...'
-                : placeholder = 'name, name...';
+                : placeholder = 'name';
             return placeholder;
         };
-        _this.state = {
-            showOptions: false
-        };
         return _this;
+        // this.state = {
+        //   showOptions: false
+        // }
     }
     Search.prototype.render = function () {
         return (React.createElement("div", null,
-            React.createElement("form", { className: styles.form },
+            React.createElement("form", { className: styles.form, onSubmit: this.props.onSwitchOptions },
                 React.createElement("div", { className: styles.selectWrapper },
-                    React.createElement("div", { className: styles.select, onClick: this.showOptions },
+                    React.createElement("div", { className: styles.select, onClick: this.props.onSwitchOptions },
                         React.createElement("p", null, this.props.searchMode ? this.props.searchMode : 'keyword')),
-                    React.createElement("div", { className: styles.selectOptions, "data-show": this.state.showOptions },
-                        React.createElement("ul", null,
+                    React.createElement("div", { className: styles.selectOptions, "data-show": this.props.showOptions },
+                        React.createElement("ul", { onClick: this.props.onSwitchOptions },
                             React.createElement("li", { "data-value": "keyword", onClick: this.props.setSearchMode }, "keyword"),
-                            React.createElement("li", { "data-value": "user", onClick: this.props.setSearchMode }, "user")))),
+                            React.createElement("li", { "data-value": "user", onClick: this.props.setSearchMode }, "user timeline")))),
                 React.createElement("input", { type: "hidden", name: "searchMode", value: this.props.searchMode }),
                 React.createElement("input", { type: "search", placeholder: this.switchPlaceholder(), value: this.props.keyword, onChange: this.props.onChange, className: styles.inputText }),
                 React.createElement("button", { onClick: this.props.onClick, className: styles.submit }))));
@@ -20492,7 +20495,7 @@ exports = module.exports = __webpack_require__(7)(false);
 
 
 // module
-exports.push([module.i, ".search__form__2d6JATi7{\n  text-align: center;\n  display: flex;\n  justify-content: center;\n  padding-top: 20px;\n  padding-bottom: 20px;\n}\n.search__selectWrapper__dVSKs3wS{\n  position: relative;\n  height: 60px;\n  line-height: 60px;\n  border: 1px solid #efefef;\n  border-right: none;\n  box-sizing: border-box;\n  cursor: pointer;\n}\n.search__selectOptions__1JUWBadJ{\n  opacity: 0;\n  visibility: hidden;\n  position: absolute;\n  background: #e9eff2;\n  width: 100%;\n  color: #737f8a;\n  border-radius: 5px;\n  top: 70px;\n  cursor: pointer;\n}\n.search__selectOptions__1JUWBadJ:after{\n  content: '';\n  display: block;\n  width: 0px;\n  height: 0px;\n  border-left: 8px solid transparent;\n  border-right: 8px solid transparent;\n  border-bottom: 8px solid #e9eff2;\n  position: absolute;\n  top: -6px;\n  right: 0;\n  left: 0;\n  margin: auto;\n}\n.search__selectOptions__1JUWBadJ[data-show=true]{\n  opacity: 1;\n  visibility: visible;\n}\n.search__selectOptions__1JUWBadJ li{\n  line-height: 1.4;\n  padding: 12px 16px;\n  border-top: 1px solid #cedae0;\n}\n.search__selectOptions__1JUWBadJ li:first-child{\n  border-top: none;\n}\n.search__select__ezyRh9oz {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0;\n  border: none;\n  padding: 0 16px;\n  font-size: 20px;\n  color: #898989;\n  min-width: 100px;\n  text-align: center;\n}\n.search__select__ezyRh9oz::-ms-expand {\n  display: none;\n}\n.search__inputText__35jPN5_P{\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  height: 60px;\n  line-height: 60px;\n  border-radius: 0;\n  border: none;\n  padding: 0 16px;\n  font-size: 20px;\n  color: #898989;\n  border: 1px solid #efefef;\n  border-right: none;\n  outline: none;\n}\n.search__submit__22zonck0{\n  background-color: #1ea1f3;\n  background-image: url(/public/img/search.svg);\n  background-repeat: no-repeat;\n  background-size: 40px;\n  background-position: center center;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  box-shadow: none;\n  border-radius: 0;\n  border: none;\n  width: 60px;\n  cursor: pointer;\n  transition: background-color .3s ease;\n}\n.search__submit__22zonck0:hover, .search__submit__22zonck0:active{\n  background-color: #1e87f3;\n}", ""]);
+exports.push([module.i, ".search__form__2d6JATi7{\n  text-align: center;\n  display: flex;\n  justify-content: center;\n  padding-top: 20px;\n  padding-bottom: 20px;\n}\n.search__selectWrapper__dVSKs3wS{\n  position: relative;\n  height: 60px;\n  line-height: 60px;\n  border: 1px solid #efefef;\n  border-right: none;\n  box-sizing: border-box;\n  cursor: pointer;\n}\n.search__selectOptions__1JUWBadJ{\n  opacity: 0;\n  visibility: hidden;\n  position: absolute;\n  background: #e9eff2;\n  width: 100%;\n  color: #737f8a;\n  border-radius: 5px;\n  top: 70px;\n  cursor: pointer;\n}\n.search__selectOptions__1JUWBadJ:after{\n  content: '';\n  display: block;\n  width: 0px;\n  height: 0px;\n  border-left: 8px solid transparent;\n  border-right: 8px solid transparent;\n  border-bottom: 8px solid #e9eff2;\n  position: absolute;\n  top: -6px;\n  right: 0;\n  left: 0;\n  margin: auto;\n}\n.search__selectOptions__1JUWBadJ[data-show=true]{\n  opacity: 1;\n  visibility: visible;\n}\n.search__selectOptions__1JUWBadJ li{\n  line-height: 1.4;\n  padding: 12px 16px;\n  border-top: 1px solid #cedae0;\n}\n.search__selectOptions__1JUWBadJ li:first-child{\n  border-top: none;\n}\n.search__select__ezyRh9oz {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0;\n  border: none;\n  padding: 0 16px;\n  font-size: 20px;\n  color: #898989;\n  min-width: 100px;\n  text-align: center;\n}\n.search__select__ezyRh9oz::-ms-expand {\n  display: none;\n}\n.search__inputText__35jPN5_P{\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  height: 60px;\n  line-height: 60px;\n  border-radius: 0;\n  border: none;\n  padding: 0 16px;\n  font-size: 20px;\n  color: #898989;\n  border: 1px solid #efefef;\n  border-right: none;\n  outline: none;\n}\n.search__submit__22zonck0{\n  background-color: #1ea1f3;\n  background-image: url(/public/img/search.svg);\n  background-repeat: no-repeat;\n  background-size: 40px;\n  background-position: center center;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  box-shadow: none;\n  border-radius: 0;\n  border: none;\n  width: 60px;\n  cursor: pointer;\n  flex: 0 0 60px;\n  transition: background-color .3s ease;\n}\n.search__submit__22zonck0:hover, .search__submit__22zonck0:active{\n  background-color: #1e87f3;\n}", ""]);
 
 // exports
 exports.locals = {

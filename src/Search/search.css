@@ -95,6 +95,7 @@
   border: none;
   width: 60px;
   cursor: pointer;
+  flex: 0 0 60px;
   transition: background-color .3s ease;
 }
 .submit:hover, .submit:active{
