@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "",
   "license": "ISC",
@@ -51,10 +53,12 @@
     "passport": "^0.4.0",
     "passport-twitter": "^1.0.4",
     "react-string-replace": "^0.4.1",
-    "twitter": "^1.7.1"
+    "twitter": "^1.7.1",
+    "snyk": "^1.161.1"
   },
   "engines": {
     "node": "v9.4.X",
     "npm": "5.6.X"
-  }
+  },
+  "snyk": true
 }
